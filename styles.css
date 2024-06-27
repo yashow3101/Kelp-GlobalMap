@@ -175,6 +175,22 @@ body{
     border-radius: 4px;
 }
 
+.btn-display{
+    position:absolute;
+    background-color:transparent;
+    top:10px;
+    right: 10px;
+    border-radius: 10px;
+    padding:5px;
+    border: none;
+}
+
+.btn-add{
+    font-size: 17px;
+    border-radius:4px;
+    background-color: white;
+}
+
 /* .col-3{
     width:auto;
 } */

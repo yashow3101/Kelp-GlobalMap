@@ -15,6 +15,14 @@
       "address": "New Delhi, Delhi, India",
       "longitude": 77.208773,
       "latitude": 28.613927
+    },
+    {
+      "type": "live",
+      "id": "place.894029",
+      "name": "Paris",
+      "address": "Paris, France",
+      "longitude": 2.3483915,
+      "latitude": 48.8534951
     }
   ],
   "inProgress": [
