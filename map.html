@@ -1,0 +1,64 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Global Map</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="styles.css" rel="stylesheet">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+</head>
+ <body>
+    <div id="map"></div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoieWFzaG93MzEwMSIsImEiOiJjbHhlbjNmNWEwZ2I3MnJxdDhhcjVsbDlqIn0.RHTOWqOzCCfQAyVg3a7IiA';
+
+        const map = new mapboxgl.Map ({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: [77.1025, 28.7041],
+        zoom: 4
+        });
+
+        // const storedData = JSON.parse(localStorage.getItem('locations')) || { live: [], inProgress: [], demo: [] };
+
+        // function addMarker(locations, color){
+        //     new mapboxgl.Marker({color: color}).setLngLat([locations.longitude , locations.latitude]).addTo(map);
+        // }
+
+        // storedData.live.forEach(locations => addMarker(locations, 'green'));
+        // storedData.inProgress.forEach(locations => addMarker(locations, 'blue'));
+        // storedData.demo.forEach(locations => addMarker(locations, 'gray'));    
+
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                const { live, inProgress, demo } = data;
+
+                // Function to add markers
+                function addMarkers(locations, color) {
+                    locations.forEach(location => {
+                        new mapboxgl.Marker({ color: color })
+                            .setLngLat([location.longitude, location.latitude])
+                            .addTo(map);
+                    });
+                }
+
+                addMarkers(live, 'green');
+                addMarkers(inProgress, 'blue');
+                addMarkers(demo, 'gray');
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    </script>
+
+    <div class="legend" id="marker-description">
+        <h4>Marker</h4>
+        <div><span style="background-color: green"></span>Live</div>
+        <div><span style="background-color: blue"></span>In Progress</div>
+        <div><span style="background-color: gray"></span>Demo</div>
+    </div>
+ </body>
+</html>

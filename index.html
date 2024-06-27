@@ -1,0 +1,215 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Add Location</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+    <header></header>
+</head>
+<body>
+    <header class="site-header">
+        <h2>Kelp Digital Presence</h2>
+    </header>
+    <!-- <div class="form-container"> -->
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-12 col-md-4 mb-4">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h4>Live:</h4>
+                            <form id="liveform">
+                                <div id="liveGeocoder"></div>
+                                <pre id="liveResult"></pre>
+                                <button type="button" class="btn-green" onclick="addLocation('live', event)">Add</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4 mb-4">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h4>In Progress:</h4>
+                            <form id="inProgressform">
+                                <div id="inProgressGeocoder"></div>
+                                <pre id="inProgressResult"></pre>
+                                <button type="button" class="btn-green" onclick="addLocation('inProgress' , event)">Add</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4 mb-4">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h4>Demo:</h4>
+                            <form id="demoform">
+                                <div id="demoGeocoder"></div>
+                                <pre id="demoResult"></pre>
+                                <button type="button" class="btn-green" onclick="addLocation ('demo' , event)">Add</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>  
+        
+                <!-- <div class="col-12 col-md-4"> -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="btn">
+                                <a href="map.html">
+                                    <button type="button" class="btn-greener" onclick="sendDataToServer()">Display Location</button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                <!-- </div> -->
+            </div>
+        </div> 
+    <!-- </div>            -->
+    <script>
+        var locations ={
+            live:[],
+            inProgress:[],
+            demo:[]
+        };
+
+        mapboxgl.accessToken = 'pk.eyJ1IjoieWFzaG93MzEwMSIsImEiOiJjbHhlbjNmNWEwZ2I3MnJxdDhhcjVsbDlqIn0.RHTOWqOzCCfQAyVg3a7IiA';
+
+        function initializeGeocoder(inputId, resultId) {
+            const geocoder = new MapboxGeocoder({
+                accessToken: mapboxgl.accessToken,
+                mapboxgl: mapboxgl,
+            });
+
+            geocoder.addTo(`#${inputId}`);
+
+            const results = document.getElementById(resultId);
+
+            geocoder.on('result', (e) => {
+                // results.innerText = JSON.stringify(e.result, null, 2);
+                if (e.result) {
+                    const locationData = {
+                        id: e.result.id,
+                        name: e.result.text,
+                        address: e.result.place_name,
+                        longitude: e.result.center[0],
+                        latitude: e.result.center[1],
+                    };
+
+                    results.dataset.locationData = JSON.stringify(locationData);
+                } else {
+                    results.innerText = '';
+                }
+            });
+
+            // geocoder.on('clear', () => {
+            //     // results.innerText = '';
+            //     results.innerText += `Name: ${locationData.name}\nAddress: ${locationData.address}\n\n`;
+            // });
+        }
+
+        function checkLocationExists(locationId) {
+            return Object.values(locations).some(category => category.some(location => location.id === locationId));
+        }
+
+        function addLocation(type, event) {
+            
+            const locationResult = document.getElementById(`${type}Result`);
+            const locationData = JSON.parse(locationResult.dataset.locationData);
+
+            if (!locations[type]) {
+                locations[type] = [];
+            }
+
+            const dataToStore = {
+                type: type,
+                id: locationData.id,
+                name: locationData.name,
+                address: locationData.address,
+                longitude: locationData.longitude,
+                latitude: locationData.latitude,
+            };
+            // locations.push(dataToStore)
+            // locationResult.innerText += `Name: ${locationData.name}\nAddress: ${locationData.address}\n\n`;
+            // const checkLocation = locations[type].find(x => x.id === dataToStore.id);
+
+            const locationItem = document.createElement('div');
+            locationItem.className = 'location-item row';
+
+            if(!checkLocationExists(dataToStore.id)){
+                locations[type].push(dataToStore);
+                const itemIndex = locations[type].length;
+                // locationItem.innerText = `${itemIndex}. Name: ${locationData.name}\nAddress: ${locationData.address}\n`;
+                // locationItem.innerHTML = `
+                //     <div class="col-3" id="location-label">
+                //         ${itemIndex}. Name: <br> Address:
+                //     </div>
+                //     <div class="col-9" id="location-data">
+                //         ${locationData.name}<br>${locationData.address}
+                //     </div>
+                // `;
+
+                locationItem.innerHTML = `
+                    <div class="row">
+                        <div class="col-3">${itemIndex}.<strong>Name:</strong></div>
+                        <div class="col-9">${locationData.name}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3"><strong>Address:</strong></div>
+                        <div class="col-9">${locationData.address}</div>
+                    </div>
+                `;
+
+                locationResult.appendChild(locationItem);
+            } else {
+                console.log("${dataToStore.name } already exists")
+                // locationItem.innerText = `${locationData.name} already added\n`;
+                locationItem.innerHTML = `<div class="col-12">${locationData.name} already added</div>`;
+                locationResult.appendChild(locationItem);
+            }
+
+            // const storedData = JSON.parse(localStorage.getItem('locations')) || { live: [], inProgress: [], demo: [] };
+            // storedData[type].push(dataToStore);
+            // localStorage.setItem('locations', JSON.stringify(storedData));
+
+            console.log(`Adding ${JSON.stringify(locations)} to ${type} locations.`);
+        }
+
+        window.onload = function() {
+            initializeGeocoder('liveGeocoder', 'liveResult');
+            initializeGeocoder('inProgressGeocoder', 'inProgressResult');
+            initializeGeocoder('demoGeocoder', 'demoResult');
+        };
+
+        function sendDataToServer(){
+            fetch('http://localhost:3000/addLocation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(locations),
+            })
+            .then(response => {
+               
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.text();
+            })
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error adding location:', error);
+            });
+        }
+
+    </script>
+
+</body>
+</html>
