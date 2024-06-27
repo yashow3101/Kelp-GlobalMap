@@ -15,50 +15,42 @@
       "address": "New Delhi, Delhi, India",
       "longitude": 77.208773,
       "latitude": 28.613927
-    },
-    {
-      "type": "live",
-      "id": "place.894029",
-      "name": "Paris",
-      "address": "Paris, France",
-      "longitude": 2.3483915,
-      "latitude": 48.8534951
     }
   ],
   "inProgress": [
     {
       "type": "inProgress",
-      "id": "poi.1039382100063",
-      "name": "London Heathrow Airport",
-      "address": "London Heathrow Airport, Nelson Rd, Hounslow, England TW6 1QG, United Kingdom",
-      "longitude": -0.4618685,
-      "latitude": 51.473454000000004
+      "id": "place.6957135",
+      "name": "London",
+      "address": "London, Greater London, England, United Kingdom",
+      "longitude": -0.127647,
+      "latitude": 51.5073
     },
     {
       "type": "inProgress",
-      "id": "poi.68719493707",
-      "name": "Rome Ciampino Airport",
-      "address": "Rome Ciampino Airport, Via Appia Nuova 1651, Rome, Rome 00178, Italy",
-      "longitude": 12.590473,
-      "latitude": 41.799411
+      "id": "place.47384688",
+      "name": "Rome",
+      "address": "Rome, Rome, Italy",
+      "longitude": 12.476601,
+      "latitude": 41.900196
     }
   ],
   "demo": [
     {
       "type": "demo",
-      "id": "poi.429496770385",
-      "name": "John F. Kennedy International Airport",
-      "address": "John F. Kennedy International Airport, JFK Expy, New York City, New York 11430, United States",
-      "longitude": -73.781749,
-      "latitude": 40.642421999999996
+      "id": "place.233720044",
+      "name": "New York City",
+      "address": "New York City, New York, United States",
+      "longitude": -74.0059945,
+      "latitude": 40.7127492
     },
     {
       "type": "demo",
-      "id": "poi.300647807514",
-      "name": "Los Angeles International Airport",
-      "address": "Los Angeles International Airport, 1 World Way, Los Angeles, California 90045, United States",
-      "longitude": -118.406829,
-      "latitude": 33.942912
+      "id": "place.192407788",
+      "name": "Los Angeles",
+      "address": "Los Angeles, California, United States",
+      "longitude": -118.24168,
+      "latitude": 34.054077
     }
   ]
 }
