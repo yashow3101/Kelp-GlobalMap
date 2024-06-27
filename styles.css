@@ -167,6 +167,14 @@ body{
     width: 10px;
 }
 
+#menu {
+    position: absolute;
+    background: #efefef;
+    padding: 10px;
+    font-family: 'Open Sans', sans-serif;
+    border-radius: 4px;
+}
+
 /* .col-3{
     width:auto;
 } */

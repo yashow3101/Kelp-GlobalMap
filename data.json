@@ -17,6 +17,40 @@
       "latitude": 28.613927
     }
   ],
-  "inProgress": [],
-  "demo": []
+  "inProgress": [
+    {
+      "type": "inProgress",
+      "id": "poi.1039382100063",
+      "name": "London Heathrow Airport",
+      "address": "London Heathrow Airport, Nelson Rd, Hounslow, England TW6 1QG, United Kingdom",
+      "longitude": -0.4618685,
+      "latitude": 51.473454000000004
+    },
+    {
+      "type": "inProgress",
+      "id": "poi.68719493707",
+      "name": "Rome Ciampino Airport",
+      "address": "Rome Ciampino Airport, Via Appia Nuova 1651, Rome, Rome 00178, Italy",
+      "longitude": 12.590473,
+      "latitude": 41.799411
+    }
+  ],
+  "demo": [
+    {
+      "type": "demo",
+      "id": "poi.429496770385",
+      "name": "John F. Kennedy International Airport",
+      "address": "John F. Kennedy International Airport, JFK Expy, New York City, New York 11430, United States",
+      "longitude": -73.781749,
+      "latitude": 40.642421999999996
+    },
+    {
+      "type": "demo",
+      "id": "poi.300647807514",
+      "name": "Los Angeles International Airport",
+      "address": "Los Angeles International Airport, 1 World Way, Los Angeles, California 90045, United States",
+      "longitude": -118.406829,
+      "latitude": 33.942912
+    }
+  ]
 }
