@@ -22,11 +22,11 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <h4>Live:</h4>
-                            <form id="liveform">
-                                <div id="liveGeocoder"></div>
-                                <pre id="liveResult"></pre>
+                            <form id="liveform" class="geocoder-form">
+                                <div id="liveGeocoder" class="geocoder-container"></div>
                                 <button type="button" class="btn-green" onclick="addLocation('live', event)">Add</button>
                             </form>
+                            <pre id="liveResult"></pre>
                         </div>
                     </div>
                 </div>
@@ -35,11 +35,11 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <h4>In Progress:</h4>
-                            <form id="inProgressform">
-                                <div id="inProgressGeocoder"></div>
-                                <pre id="inProgressResult"></pre>
+                            <form id="inProgressform" class="geocoder-form">
+                                <div id="inProgressGeocoder" class="geocoder-container"></div>
                                 <button type="button" class="btn-green" onclick="addLocation('inProgress' , event)">Add</button>
                             </form>
+                            <pre id="inProgressResult"></pre>
                         </div>
                     </div>
                 </div>
@@ -48,11 +48,11 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <h4>Demo:</h4>
-                            <form id="demoform">
-                                <div id="demoGeocoder"></div>
-                                <pre id="demoResult"></pre>
+                            <form id="demoform" class="geocoder-form">
+                                <div id="demoGeocoder" class="geocoder-container"></div>
                                 <button type="button" class="btn-green" onclick="addLocation ('demo' , event)">Add</button>
                             </form>
+                            <pre id="demoResult"></pre>
                         </div>
                     </div>
                 </div>  
@@ -184,7 +184,83 @@
             initializeGeocoder('liveGeocoder', 'liveResult');
             initializeGeocoder('inProgressGeocoder', 'inProgressResult');
             initializeGeocoder('demoGeocoder', 'demoResult');
+            fetchLocation();
         };
+
+        function fetchLocation() {
+            fetch('http://localhost:3000/locations')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Locations fetched successfully:', data);
+                locations = data;
+                updateLocationDisplay('live', 'liveResult');
+                updateLocationDisplay('inProgress', 'inProgressResult');
+                updateLocationDisplay('demo', 'demoResult');
+            })
+            .catch(error => {
+                console.error('Error fetching locations:', error);
+            });
+        }
+
+
+        function updateLocationDisplay(type, resultId){
+            const locationResult = document.getElementById(resultId);
+            locationResult.innerHTML='';
+            
+            locations[type].forEach((locationData, index)=>{
+                const locationItem = document.createElement('div');
+                locationItem.className = 'location-item row';
+
+                locationItem.innerHTML = `
+                    <div class="col-11">  
+                        <div class="row">
+                            <div class="col-3">${index + 1}.<strong>Name:</strong></div>
+                            <div class="col-9">${locationData.name}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3"><strong>Address:</strong></div>
+                            <div class="col-9">${locationData.address}</div>
+                        </div>
+                    </div>
+                    <div class="col-1">
+                        <button class="btn delete-button" onclick="deleteLocation('${type}', ${index})">&times;</button>
+                    </div>
+                `;
+
+                locationResult.appendChild(locationItem);
+            })
+        }
+
+        function deleteLocation(type, index){
+            const locationToDelete = locations[type][index];
+            
+            fetch('http://localhost:3000/deleteLocation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({type: type , id: locationToDelete.id}),
+            })
+            .then(response => {
+               
+               if (!response.ok) {
+                   throw new Error(`HTTP error! Status: ${response.status}`);
+               }
+               return response.text();
+           })
+           .then(() => {
+                locations[type].splice(index, 1);
+                updateLocationDisplay(type, `${type}Result`);
+            })
+            .catch(error => {
+                console.error('Error deteling location:', error);
+            });
+        }
 
         function sendDataToServer(){
             fetch('http://localhost:3000/addLocation', {

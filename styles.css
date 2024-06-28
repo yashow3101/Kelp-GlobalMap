@@ -114,9 +114,11 @@ body{
     color:white;
     border:none;
     border-radius: 10px;
-    padding: 10px 20px;
+    padding: 5px 20px;
     font-size: 17px;
     border-radius: 4px;
+    margin-left: 10px;
+    margin-top:10px
 }
 
 .btn-greener{
@@ -167,18 +169,18 @@ body{
     width: 10px;
 }
 
-#menu {
+/* #menu {
     position: absolute;
     background: #efefef;
     padding: 10px;
     font-family: 'Open Sans', sans-serif;
     border-radius: 4px;
-}
+} */
 
 .btn-display{
     position:absolute;
     background-color:white;
-    top:10px;
+    top:8px;
     right: 10px;
     border-radius: 10px;
     padding:5px;
@@ -190,7 +192,82 @@ body{
     border-radius:4px;
     background-color: white;
     border: none;
+    cursor: pointer;
 }
+
+.geocoder-form {
+    display: flex;
+    /* align-items: center; */
+}
+
+.location-item .delete-button{
+    font-size:22px;
+    padding:2px 4px;
+    color:white;
+    background-color: #3b4761;
+}
+
+.btn-drop{
+    position:absolute;
+    background-color:white;
+    top:8px;
+    right: 150px;
+    border-radius: 10px;
+    padding:5px;
+    border: none;
+}
+
+.btn-pin{
+    font-size: 17px;
+    border-radius:4px;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.dropbtn {
+    position:absolute;
+    background-color:white;
+    top:10px;
+    left: 10px;
+    border-radius: 10px;
+    padding:5px;
+    border: none;
+    font-size: 17px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    border-radius: 4px;
+    top:45px;
+    left:10px
+}
+.dropdown-content button {
+    color: black;
+    padding: 10px 16px;
+    display: block;
+    width: 100%;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+}
+.dropdown-content button:hover {
+    background-color: #f1f1f1;
+}
+.show {
+    display: block;
+}
+
+/* .dropdown{
+    position: relative;
+    display: inline-block;
+} */
 
 /* .col-3{
     width:auto;

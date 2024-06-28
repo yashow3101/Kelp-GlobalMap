@@ -100,6 +100,52 @@ app.post('/addLocation', (req, res) => {
     });
 });
 
+app.get('/getLocation', (req, res) => {
+    fs.readFile('data.json', (err, data) => {
+        if (err) {
+            console.error('Error reading data file:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+        const locations = JSON.parse(data);
+        res.status(200).json(locations);
+    });
+});
+
+app.post('/deleteLocation' , (req,res) =>{
+    const {type , id} = req.body
+    // const delLocation = req.body;
+    // console.log(req.body)
+
+    fs.readFile('data.json', (err, data) => {
+        if (err) throw err;
+
+        let locations = {};
+        try {
+            locations = JSON.parse(data);
+        } catch (parseErr) {
+            console.error('Error parsing data file:', parseErr);
+            return res.status(500).send('Internal Server Error');
+        }
+
+        // if(locations[type] && locations[type][index]){
+        //     locations[type].splice(index,1) 
+        // }
+        // req.body.forEach(delLocation => {
+        //     locations.live = locations.live.filter(x => x.id == delLocation.id);
+        //     locations.inProgress = locations.inProgress.filter(x => x.id == delLocation.id);
+        //     locations.demo = locations.demo.filter(x => x.id == delLocation.id);
+        // })
+
+        locations[type] = locations[type].filter(location => location.id !== id);
+        
+        fs.writeFile('data.json', JSON.stringify(locations, null, 2), (err) => {
+            if (err) throw err;
+            console.log("Location deleted");
+            res.status(200).send('Locations deleted successfully');
+        });
+    })
+})
+
 app.get('/locations', (req, res) => {
     fs.readFile('data.json', (err, data) => {
         if (err) throw err;

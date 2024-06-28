@@ -2,6 +2,14 @@
   "live": [
     {
       "type": "live",
+      "id": "locality.355017",
+      "name": "Singapore",
+      "address": "Singapore, Singapore, Central Singapore Community Development Council",
+      "longitude": 103.840943,
+      "latitude": 1.288799
+    },
+    {
+      "type": "live",
       "id": "place.29403243",
       "name": "Mumbai",
       "address": "Mumbai, Maharashtra, India",
@@ -33,6 +41,14 @@
       "address": "Rome, Rome, Italy",
       "longitude": 12.476601,
       "latitude": 41.900196
+    },
+    {
+      "type": "inProgress",
+      "id": "place.894029",
+      "name": "Paris",
+      "address": "Paris, France",
+      "longitude": 2.3483915,
+      "latitude": 48.8534951
     }
   ],
   "demo": [

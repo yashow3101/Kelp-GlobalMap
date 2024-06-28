@@ -12,23 +12,23 @@
  <body>
     <div id="map"></div>
 
-    <div id="menu">
-        <input id="streets-v12" type="radio" name="rtoggle" value="streets" checked="checked">
-        <label for="streets-v12">streets</label>
-        <input id="satellite-streets-v12" type="radio" name="rtoggle" value="satellite">
-        <label for="satellite-streets-v12">satellite streets</label>
-        <input id="light-v11" type="radio" name="rtoggle" value="light">
-        <label for="light-v11">light</label>
-        <input id="dark-v11" type="radio" name="rtoggle" value="dark">
-        <label for="dark-v11">dark</label>
-        <input id="outdoors-v12" type="radio" name="rtoggle" value="outdoors">
-        <label for="outdoors-v12">outdoors</label>
-    </div>
-
     <div class="btn-display">
         <a href="index.html">
             <button type="button" class="btn-add">Add Location</button>
         </a>
+    </div>
+
+    <!-- <div class="btn-drop">
+        <button type="button" class="btn-pin" onclick="dropPin()">Drop Pin</button>
+    </div> -->
+
+    <div class="dropdown">
+        <button onclick="toggleDropdown()" class="dropbtn">Drop Pin</button>
+        <div id="dropdownPin" class="dropdown-content">
+            <button onclick="dropPin('live')">Live Pin</button>
+            <button onclick="dropPin('inProgress')">InProgress Pin</button>
+            <button onclick="dropPin('demo')">Demo Pin</button>
+        </div>
     </div>
     
     <script>
@@ -36,21 +36,80 @@
 
         const map = new mapboxgl.Map ({
         container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v12', //3D Map
+        style: 'mapbox://styles/mapbox/streets-v11', //3D Map
         // style: 'mapbox://styles/mapbox/streets-v11', //2D Map
         center: [77.1025, 28.7041],
         zoom: 4
         });
 
-        const layerList = document.getElementById('menu');
-        const inputs = layerList.getElementsByTagName('input');
+        // const layerList = document.getElementById('menu');
+        // const inputs = layerList.getElementsByTagName('input');
 
-        for (const input of inputs) {
-            input.onclick = (layer) => {
-                const layerId = layer.target.id;
-                map.setStyle('mapbox://styles/mapbox/' + layerId);
-            };
+        // for (const input of inputs) {
+        //     input.onclick = (layer) => {
+        //         const layerId = layer.target.id;
+        //         map.setStyle('mapbox://styles/mapbox/' + layerId);
+        //     };
+        // }
+
+        function toggleDropdown() {
+            document.getElementById("dropdownPin").classList.toggle("show");
         }
+
+        function dropPin(type) {
+        const center = map.getCenter();
+        switch(type) {
+            case 'live':
+                color = 'green';
+                break;
+            case 'inProgress':
+                color = 'blue';
+                break;
+            case 'demo':
+                color = 'gray';
+                break;
+        }
+        new mapboxgl.Marker({
+            draggable: true,
+            color: color
+        })
+            .setLngLat(center)
+            .addTo(map)
+            .on('dragend', function() {
+                const lngLat = this.getLngLat();
+                coordinates.style.display = 'block';
+                coordinates.innerHTML = `Longitude: ${lngLat.lng}<br />Latitude: ${lngLat.lat}`;
+                });
+        }
+
+
+        // <div id="menu">
+        //     <input id="streets-v12" type="radio" name="rtoggle" value="streets" checked="checked">
+        //     <label for="streets-v12">streets</label>
+        //     <input id="satellite-streets-v12" type="radio" name="rtoggle" value="satellite">
+        //     <label for="satellite-streets-v12">satellite streets</label>
+        //     <input id="light-v11" type="radio" name="rtoggle" value="light">
+        //     <label for="light-v11">light</label>
+        //     <input id="dark-v11" type="radio" name="rtoggle" value="dark">
+        //     <label for="dark-v11">dark</label>
+        //     <input id="outdoors-v12" type="radio" name="rtoggle" value="outdoors">
+        //     <label for="outdoors-v12">outdoors</label>
+        // </div>
+
+        // function dropPin(){
+        //     const center = map.getCenter();
+        //     const marker = new mapboxgl.Marker({
+        //         draggable: true
+        //         })
+        //         .setLngLat(center)
+        //         .addTo(map);
+        //     }
+
+        //     function onDragEnd() {
+        //         const lngLat = marker.getLngLat();
+        //         coordinates.style.display = 'block';
+        //         coordinates.innerHTML = `Longitude: ${lngLat.lng}<br />Latitude: ${lngLat.lat}`;
+        //     }
 
         // const storedData = JSON.parse(localStorage.getItem('locations')) || { live: [], inProgress: [], demo: [] };
 
