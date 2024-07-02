@@ -140,6 +140,14 @@ body{
     justify-content: center;
     color: white;
     padding: 10px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+}
+
+.header-image{
+    height: 50px;
+    margin-right:15px
 }
 
 .legend {
@@ -273,8 +281,15 @@ body{
     min-height: 15px;
 }
 
-.cst-popup{
+.cust-popup{
+    width: auto;
+    height: auto;
     position: relative;
+    cursor: none;
+}
+
+.cust-popup h3 {
+    font-size: 13px;
 }
 
 .custom-popup {

@@ -1,56 +1,5 @@
 {
-  "live": [
-    {
-      "type": "live",
-      "id": "place.31664235",
-      "name": "New Delhi",
-      "address": "New Delhi, Delhi, India",
-      "longitude": 77.208773,
-      "latitude": 28.613927
-    },
-    {
-      "type": "live",
-      "id": "locality.1719901148858",
-      "name": "Firestone Boulevard",
-      "address": "4757 Firestone Boulevard, South Gate, California 90280, United States",
-      "longitude": -118.1849517955498,
-      "latitude": 33.95244759188391
-    },
-    {
-      "type": "live",
-      "id": "locality.1719904480473",
-      "name": "Calle Enrico Martínez",
-      "address": "Calle Enrico Martínez 182, 06040 Mexico City, Mexico",
-      "longitude": -99.15025296067058,
-      "latitude": 19.428000625862282
-    }
-  ],
-  "inProgress": [
-    {
-      "type": "inProgress",
-      "id": "place.6957135",
-      "name": "London",
-      "address": "London, Greater London, England, United Kingdom",
-      "longitude": -0.127647,
-      "latitude": 51.5073
-    },
-    {
-      "type": "inProgress",
-      "id": "locality.1719901326439",
-      "name": "East Spring Street",
-      "address": "2611 East Spring Street, Long Beach, California 90806, United States",
-      "longitude": -118.152073559628,
-      "latitude": 33.817352823438355
-    }
-  ],
-  "demo": [
-    {
-      "type": "demo",
-      "id": "place.233720044",
-      "name": "New York City",
-      "address": "New York City, New York, United States",
-      "longitude": -74.0059945,
-      "latitude": 40.7127492
-    }
-  ]
+  "live": [],
+  "inProgress": [],
+  "demo": []
 }

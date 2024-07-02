@@ -35,7 +35,7 @@
             style: 'mapbox://styles/mapbox/streets-v11',
             center: [4.0000, 10.0000],
             zoom: 1,
-            maxBounds: [[-180, -85], [183, 85]], 
+            maxBounds: [[-180, -85], [182, 85]], 
         });
 
         let currentMarker;
@@ -92,7 +92,7 @@
                 reverseGeocode(lngLat).then(locationData => {
                     popup.setHTML(`
                         <div class="custom-popup">
-                            <h2>Location: ${locationData.name}</h2>
+                            <h2>Location: ${locationData.city}</h2>
                         </div>
                         <div class="btn-popup">
                             <button type="button" onclick="addPinLocation()"><span style='font-size:15px;'>&#9989;</span></button>
@@ -117,7 +117,7 @@
                     const data = {
                         type: currentType,
                         id: `locality.${Date.now()}`,
-                        name: locationData.name,
+                        name: locationData.city,
                         address: locationData.address,
                         longitude: lngLat.lng,
                         latitude: lngLat.lat,
@@ -156,10 +156,25 @@
                 .then(data => {
                     if (data.features && data.features.length > 0) {
                         const feature = data.features[0];
-                        const placeName = feature.place_name;
+                        // const address = feature.place_name;
                         const name = feature.text;
-                        
-                        return { address: placeName, name: name };
+                        let city, country;
+                        for (const feature of data.features) {
+                            if (feature.place_type.includes("place")) {
+                                city = feature.text;
+                            }
+                            if(feature.place_type.includes("region")){
+                                state = feature.text;
+                            }
+                            if (feature.place_type.includes("country")) {
+                                country = feature.text;
+                            }
+                        }
+                        if (city && state && country) {
+                            return { city, state, country, address:`${city}, ${state}, ${country}`};
+                        } else {
+                            throw new Error('City or country not found');
+                        }
                     } else {
                         throw new Error('No address found');
                     }
@@ -207,6 +222,7 @@
                 markerElement.style.height = '50px';
                 markerElement.style.backgroundImage = `url(${imageUrl})`;
                 markerElement.style.backgroundSize = 'cover';
+                markerElement.style.transform = 'translateY(-20px)';
 
                 const markerContainer = document.createElement('div');
                 markerContainer.appendChild(markerElement);
@@ -214,11 +230,10 @@
                 const popup = new mapboxgl.Popup({
                     closeButton: false,
                     closeOnClick: false
-                }).setHTML(`<div class="cst-popup"><h3>${location.name}</h3></div>`);
+                }).setHTML(`<div class="cust-popup"><h3>${location.name}</h3></div>`);
 
                 const marker = new mapboxgl.Marker({
                     element: markerContainer,
-                    // offset:[8,0],
                 })
                 .setLngLat([location.longitude, location.latitude])
                 .setPopup(popup)
