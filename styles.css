@@ -264,6 +264,57 @@ body{
     display: block;
 }
 
+.mapboxgl-popup-content {
+    position: relative;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    min-width: 60px;
+    min-height: 15px;
+}
+
+.cst-popup{
+    position: relative;
+}
+
+.custom-popup {
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.btn-popup {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    display: inline-flex;
+}
+
+.btn-popup button {
+    padding: 5px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+    color: white;
+    margin-right: 5px;
+}
+
+.mapboxgl-popup-content h2 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+
+/* .mapboxgl-popup{
+    max-width: 200px;
+    font:
+        12px/20px 'Helvetica Neue',
+        Arial,
+        Helvetica,
+        sans-serif;
+    font-weight: bold;
+} */
 /* .dropdown{
     position: relative;
     display: inline-block;

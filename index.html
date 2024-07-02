@@ -134,9 +134,6 @@
                 longitude: locationData.longitude,
                 latitude: locationData.latitude,
             };
-            // locations.push(dataToStore)
-            // locationResult.innerText += `Name: ${locationData.name}\nAddress: ${locationData.address}\n\n`;
-            // const checkLocation = locations[type].find(x => x.id === dataToStore.id);
 
             const locationItem = document.createElement('div');
             locationItem.className = 'location-item row';
@@ -144,15 +141,6 @@
             if(!checkLocationExists(dataToStore.id)){
                 locations[type].push(dataToStore);
                 const itemIndex = locations[type].length;
-                // locationItem.innerText = `${itemIndex}. Name: ${locationData.name}\nAddress: ${locationData.address}\n`;
-                // locationItem.innerHTML = `
-                //     <div class="col-3" id="location-label">
-                //         ${itemIndex}. Name: <br> Address:
-                //     </div>
-                //     <div class="col-9" id="location-data">
-                //         ${locationData.name}<br>${locationData.address}
-                //     </div>
-                // `;
 
                 locationItem.innerHTML = `
                     <div class="row">

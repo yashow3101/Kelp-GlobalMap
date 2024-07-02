@@ -146,6 +146,65 @@ app.post('/deleteLocation' , (req,res) =>{
     })
 })
 
+// app.post('/addPinLocation' , (req , res) => {
+
+
+//     fs.readFile('data.json', (err, data) => {
+//         if (err) throw err;
+
+//         let locations = {};
+//         try {
+//             locations = JSON.parse(data);
+//         } catch (parseErr) {
+//             console.error('Error parsing data file:', parseErr);
+//             return res.status(500).send('Internal Server Error');
+//         }
+//     })
+// })
+
+app.post('/addPinLocation', (req, res) => {
+    const newLocation = req.body;
+
+    fs.readFile('data.json', (err, data) => {
+        if (err) {
+            console.error('Error reading data file:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+
+        let locations = {};
+        try {
+            locations = JSON.parse(data);
+        } catch (parseErr) {
+            console.error('Error parsing data file:', parseErr);
+            return res.status(500).send('Internal Server Error');
+        }
+
+        switch (newLocation.type) {
+            case 'live':
+                locations.live.push(newLocation);
+                break;
+            case 'inProgress':
+                locations.inProgress.push(newLocation);
+                break;
+            case 'demo':
+                locations.demo.push(newLocation);
+                break;
+            default:
+                return res.status(400).send('Invalid location type');
+        }
+
+        fs.writeFile('data.json', JSON.stringify(locations, null, 2), (err) => {
+            if (err) {
+                console.error('Error writing data file:', err);
+                return res.status(500).send('Internal Server Error');
+            }
+            console.log('Location added successfully');
+            res.status(200).send('Location added successfully');
+        });
+    });
+});
+
+
 app.get('/locations', (req, res) => {
     fs.readFile('data.json', (err, data) => {
         if (err) throw err;

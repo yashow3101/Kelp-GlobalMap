@@ -2,27 +2,27 @@
   "live": [
     {
       "type": "live",
-      "id": "locality.355017",
-      "name": "Singapore",
-      "address": "Singapore, Singapore, Central Singapore Community Development Council",
-      "longitude": 103.840943,
-      "latitude": 1.288799
-    },
-    {
-      "type": "live",
-      "id": "place.29403243",
-      "name": "Mumbai",
-      "address": "Mumbai, Maharashtra, India",
-      "longitude": 72.878723,
-      "latitude": 19.077793
-    },
-    {
-      "type": "live",
       "id": "place.31664235",
       "name": "New Delhi",
       "address": "New Delhi, Delhi, India",
       "longitude": 77.208773,
       "latitude": 28.613927
+    },
+    {
+      "type": "live",
+      "id": "locality.1719901148858",
+      "name": "Firestone Boulevard",
+      "address": "4757 Firestone Boulevard, South Gate, California 90280, United States",
+      "longitude": -118.1849517955498,
+      "latitude": 33.95244759188391
+    },
+    {
+      "type": "live",
+      "id": "locality.1719904480473",
+      "name": "Calle Enrico Martínez",
+      "address": "Calle Enrico Martínez 182, 06040 Mexico City, Mexico",
+      "longitude": -99.15025296067058,
+      "latitude": 19.428000625862282
     }
   ],
   "inProgress": [
@@ -36,19 +36,11 @@
     },
     {
       "type": "inProgress",
-      "id": "place.47384688",
-      "name": "Rome",
-      "address": "Rome, Rome, Italy",
-      "longitude": 12.476601,
-      "latitude": 41.900196
-    },
-    {
-      "type": "inProgress",
-      "id": "place.894029",
-      "name": "Paris",
-      "address": "Paris, France",
-      "longitude": 2.3483915,
-      "latitude": 48.8534951
+      "id": "locality.1719901326439",
+      "name": "East Spring Street",
+      "address": "2611 East Spring Street, Long Beach, California 90806, United States",
+      "longitude": -118.152073559628,
+      "latitude": 33.817352823438355
     }
   ],
   "demo": [
@@ -59,14 +51,6 @@
       "address": "New York City, New York, United States",
       "longitude": -74.0059945,
       "latitude": 40.7127492
-    },
-    {
-      "type": "demo",
-      "id": "place.192407788",
-      "name": "Los Angeles",
-      "address": "Los Angeles, California, United States",
-      "longitude": -118.24168,
-      "latitude": 34.054077
     }
   ]
 }

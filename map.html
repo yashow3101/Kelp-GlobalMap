@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Global Map</title>
@@ -9,7 +10,7 @@
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
 </head>
- <body>
+<body>
     <div id="map"></div>
 
     <div class="btn-display">
@@ -17,10 +18,6 @@
             <button type="button" class="btn-add">Add Location</button>
         </a>
     </div>
-
-    <!-- <div class="btn-drop">
-        <button type="button" class="btn-pin" onclick="dropPin()">Drop Pin</button>
-    </div> -->
 
     <div class="dropdown">
         <button onclick="toggleDropdown()" class="dropbtn">Drop Pin</button>
@@ -33,115 +30,216 @@
     
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoieWFzaG93MzEwMSIsImEiOiJjbHhlbjNmNWEwZ2I3MnJxdDhhcjVsbDlqIn0.RHTOWqOzCCfQAyVg3a7IiA';
-
-        const map = new mapboxgl.Map ({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v11', //3D Map
-        // style: 'mapbox://styles/mapbox/streets-v11', //2D Map
-        center: [77.1025, 28.7041],
-        zoom: 4
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [4.0000, 10.0000],
+            zoom: 1,
+            maxBounds: [[-180, -85], [183, 85]], 
         });
 
-        // const layerList = document.getElementById('menu');
-        // const inputs = layerList.getElementsByTagName('input');
-
-        // for (const input of inputs) {
-        //     input.onclick = (layer) => {
-        //         const layerId = layer.target.id;
-        //         map.setStyle('mapbox://styles/mapbox/' + layerId);
-        //     };
-        // }
+        let currentMarker;
+        let currentType;
 
         function toggleDropdown() {
             document.getElementById("dropdownPin").classList.toggle("show");
         }
-
         function dropPin(type) {
-        const center = map.getCenter();
-        switch(type) {
-            case 'live':
-                color = 'green';
-                break;
-            case 'inProgress':
-                color = 'blue';
-                break;
-            case 'demo':
-                color = 'gray';
-                break;
-        }
-        new mapboxgl.Marker({
-            draggable: true,
-            color: color
-        })
+            currentType = type;
+            const center = map.getCenter();
+            let image;
+
+            switch(type) {
+                case 'live':
+                    image = 'https://i.ibb.co/wRLjrRd/Map-Pin-Green.png';
+                    break;
+                case 'inProgress':
+                    image = 'https://i.ibb.co/FB8YNPC/Map-Pin-Blue.png';
+                    break;
+                case 'demo':
+                    image = 'https://i.ibb.co/Jz0x9pJ/Map-Pin-Grey.png';
+                    break;
+            }
+
+            if (currentMarker) {
+                currentMarker.remove();
+            }
+
+            const markerElement = document.createElement('div');
+            markerElement.style.width = '50px';
+            markerElement.style.height = '50px';
+            markerElement.style.backgroundImage = `url(${image})`;
+            markerElement.style.backgroundSize = 'cover';
+
+            currentMarker = new mapboxgl.Marker({
+                draggable: true,
+                element: markerElement
+            })
             .setLngLat(center)
-            .addTo(map)
-            .on('dragend', function() {
-                const lngLat = this.getLngLat();
-                coordinates.style.display = 'block';
-                coordinates.innerHTML = `Longitude: ${lngLat.lng}<br />Latitude: ${lngLat.lat}`;
+            .addTo(map);
+
+            const popup = new mapboxgl.Popup().setHTML(`
+                <div class="btn-popup">
+                    <button type="button" onclick="addPinLocation()"><span style='font-size:15px;'>&#9989;</span></button>
+                    <button type="button" onclick="deletePin()"><span style='font-size:15px;'>&#10060;</span></button>
+                </div>
+            `);
+
+            currentMarker.setPopup(popup).togglePopup();
+
+            currentMarker.on('drag', () => {
+                const lngLat = currentMarker.getLngLat();
+                reverseGeocode(lngLat).then(locationData => {
+                    popup.setHTML(`
+                        <div class="custom-popup">
+                            <h2>Location: ${locationData.name}</h2>
+                        </div>
+                        <div class="btn-popup">
+                            <button type="button" onclick="addPinLocation()"><span style='font-size:15px;'>&#9989;</span></button>
+                            <button type="button" onclick="deletePin()"><span style='font-size:15px;'>&#10060;</span></button>
+                        </div>
+                    `);
+                    popup.addTo(map);
                 });
+            });
         }
 
+        function deletePin(){
+            if (currentMarker) {
+                currentMarker.remove();
+            }
+        }
 
-        // <div id="menu">
-        //     <input id="streets-v12" type="radio" name="rtoggle" value="streets" checked="checked">
-        //     <label for="streets-v12">streets</label>
-        //     <input id="satellite-streets-v12" type="radio" name="rtoggle" value="satellite">
-        //     <label for="satellite-streets-v12">satellite streets</label>
-        //     <input id="light-v11" type="radio" name="rtoggle" value="light">
-        //     <label for="light-v11">light</label>
-        //     <input id="dark-v11" type="radio" name="rtoggle" value="dark">
-        //     <label for="dark-v11">dark</label>
-        //     <input id="outdoors-v12" type="radio" name="rtoggle" value="outdoors">
-        //     <label for="outdoors-v12">outdoors</label>
-        // </div>
+        function addPinLocation() {
+            if (currentMarker) {
+                const lngLat = currentMarker.getLngLat();
+                reverseGeocode(lngLat).then(locationData => {
+                    const data = {
+                        type: currentType,
+                        id: `locality.${Date.now()}`,
+                        name: locationData.name,
+                        address: locationData.address,
+                        longitude: lngLat.lng,
+                        latitude: lngLat.lat,
+                    };
+                        
 
-        // function dropPin(){
-        //     const center = map.getCenter();
-        //     const marker = new mapboxgl.Marker({
-        //         draggable: true
-        //         })
-        //         .setLngLat(center)
-        //         .addTo(map);
-        //     }
+                fetch('http://localhost:3000/addPinLocation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                        body: JSON.stringify(data),
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.text();
+                    })
+                    .then(responseText => {
+                        alert(responseText);
+                    })
+                    .catch(error => {
+                        console.error('Error adding location:', error);
+                    });
+                });
+            }
+        }
 
-        //     function onDragEnd() {
-        //         const lngLat = marker.getLngLat();
-        //         coordinates.style.display = 'block';
-        //         coordinates.innerHTML = `Longitude: ${lngLat.lng}<br />Latitude: ${lngLat.lat}`;
-        //     }
-
-        // const storedData = JSON.parse(localStorage.getItem('locations')) || { live: [], inProgress: [], demo: [] };
-
-        // function addMarker(locations, color){
-        //     new mapboxgl.Marker({color: color}).setLngLat([locations.longitude , locations.latitude]).addTo(map);
-        // }
-
-        // storedData.live.forEach(locations => addMarker(locations, 'green'));
-        // storedData.inProgress.forEach(locations => addMarker(locations, 'blue'));
-        // storedData.demo.forEach(locations => addMarker(locations, 'gray'));    
+        function reverseGeocode(lngLat) {
+            const accessToken = 'pk.eyJ1IjoieWFzaG93MzEwMSIsImEiOiJjbHhlbjNmNWEwZ2I3MnJxdDhhcjVsbDlqIn0.RHTOWqOzCCfQAyVg3a7IiA';
+            const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lngLat.lng},${lngLat.lat}.json?access_token=${accessToken}`;
+            
+            return fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.features && data.features.length > 0) {
+                        const feature = data.features[0];
+                        const placeName = feature.place_name;
+                        const name = feature.text;
+                        
+                        return { address: placeName, name: name };
+                    } else {
+                        throw new Error('No address found');
+                    }
+                })
+                .catch(error => console.error('Error with reverse geocoding:', error));
+        }
 
         fetch('data.json')
-            .then(response => response.json())
-            .then(data => {
-                const { live, inProgress, demo } = data;
+        .then(response => response.json())
+        .then(data => {
+            const { live, inProgress, demo } = data;
 
-                // Function to add markers
-                function addMarkers(locations, color) {
-                    locations.forEach(location => {
-                        new mapboxgl.Marker({ color: color })
-                            .setLngLat([location.longitude, location.latitude])
-                            .addTo(map);
-                    });
-                }
+            map.on('load', () => {
+                map.loadImage(
+                    'https://i.ibb.co/wRLjrRd/Map-Pin-Green.png',
+                    (error, image) => {
+                        if (error) throw error;
+                        map.addImage('live-marker', image);
+                    }
+                );
+                map.loadImage(
+                    'https://i.ibb.co/FB8YNPC/Map-Pin-Blue.png',
+                    (error, image) => {
+                        if (error) throw error;
+                        map.addImage('inprogress-marker', image);
+                    }
+                );
+                map.loadImage(
+                    'https://i.ibb.co/Jz0x9pJ/Map-Pin-Grey.png',
+                    (error, image) => {
+                        if (error) throw error;
+                        map.addImage('demo-marker', image);
+                    }
+                );
 
-                addMarkers(live, 'green');
-                addMarkers(inProgress, 'blue');
-                addMarkers(demo, 'gray');
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
+                addMarkers(live, 'https://i.ibb.co/wRLjrRd/Map-Pin-Green.png');
+                addMarkers(inProgress, 'https://i.ibb.co/FB8YNPC/Map-Pin-Blue.png');
+                addMarkers(demo, 'https://i.ibb.co/Jz0x9pJ/Map-Pin-Grey.png');
             });
+
+        function addMarkers(locations, imageUrl) {
+            locations.forEach(location => {
+                const markerElement = document.createElement('div');
+                markerElement.style.width = '50px';
+                markerElement.style.height = '50px';
+                markerElement.style.backgroundImage = `url(${imageUrl})`;
+                markerElement.style.backgroundSize = 'cover';
+
+                const markerContainer = document.createElement('div');
+                markerContainer.appendChild(markerElement);
+
+                const popup = new mapboxgl.Popup({
+                    closeButton: false,
+                    closeOnClick: false
+                }).setHTML(`<div class="cst-popup"><h3>${location.name}</h3></div>`);
+
+                const marker = new mapboxgl.Marker({
+                    element: markerContainer,
+                    // offset:[8,0],
+                })
+                .setLngLat([location.longitude, location.latitude])
+                .setPopup(popup)
+                .addTo(map);
+
+                markerContainer.addEventListener('mouseenter', () => {
+                    popup.addTo(map);
+                    map.getCanvas().style.cursor = 'pointer';
+                });
+                
+                markerContainer.addEventListener('mouseleave', () => {
+                    popup.remove();
+                    map.getCanvas().style.cursor = '';
+                });
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });
+
     </script>
 
     <div class="legend" id="marker-description">
@@ -150,5 +248,5 @@
         <div><span style="background-color: blue"></span>In Progress</div>
         <div><span style="background-color: gray"></span>Demo</div>
     </div>
- </body>
+</body>
 </html>
