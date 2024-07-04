@@ -49,25 +49,6 @@ app.post('/addLocation', (req, res) => {
             return res.status(500).send('Internal Server Error');
         }
 
-        // req.body.forEach(newLocation=>{
-        // locations.live = locations.live.filter(x => x.id !== newLocation.id);
-        // locations.inProgress = locations.inProgress.filter(x => x.id !== newLocation.id);
-        // locations.demo = locations.demo.filter(x => x.id !== newLocation.id);
-        // switch (newLocation.type) {
-            //     case 'live':
-            //         locations.live.push(newLocation);
-            //         break;
-            //     case 'inProgress':
-            //         locations.inProgress.push(newLocation);
-            //         break;
-            //     case 'demo':
-            //         locations.demo.push(newLocation);
-            //         break;
-            //     default:
-            //         return res.status(400).send('Invalid location type');
-            //     }
-            // })
-
         newLocations.live.forEach(newLocation => {
             locations.live = locations.live.filter(x => x.id !== newLocation.id);
             locations.inProgress = locations.inProgress.filter(x => x.id !== newLocation.id);
@@ -203,6 +184,42 @@ app.post('/addPinLocation', (req, res) => {
         });
     });
 });
+
+app.post('/validate-url', async (req, res) => {
+    const { url } = req.body;
+
+    // const pattern = new RegExp(
+    //     '^(https?:\\/\\/)?' + // optional protocol (http or https)
+    //     '((www\\.[a-z\\d-]{2,}\\.)|[a-z\\d-]{2,}\\.)' + // www. or subdomain followed by dot
+    //     '[a-z\\d-]{5,}' + // domain name (at least five characters)
+    //     '\\.' + // dot before the TLD
+    //     '[a-z]{2,}' + // TLD with at least two characters
+    //     '(\\:\\d+)?' + // optional port
+    //     '(\\/[-a-z\\d%_.~+]*)*' + // path
+    //     '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+    //     '(\\#[-a-z\\d_]*)?$', // fragment locator
+    //     'i'
+    // );
+    const pattern = new RegExp(
+            '^(?:https?:\/\/)?(?:www\.[a-zA-Z0-9-]{2,}\.[a-zA-Z]{2,}|(?:www\.[a-zA-Z0-9-]{2,}\.)?[a-zA-Z0-9-]{2,}\.[a-zA-Z]{2,})$'
+    );
+
+    if (!pattern.test(url)) {
+        return res.status(400).json({ valid: false, message: 'Invalid URL pattern' });
+    }
+
+    try {
+        const response = await fetch(url);
+        if (response.status === 200) {
+            return res.json({ valid: true });
+        } else {
+            return res.status(response.status).json({ valid: false, message: 'URL did not return a 200 status' });
+        }
+    } catch (error) {
+        return res.status(400).json({ valid: false, message: 'URL is not accessible' });
+    }
+});
+
 
 
 app.get('/locations', (req, res) => {

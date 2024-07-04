@@ -25,10 +25,31 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <h4>Live:</h4>
-                            <form id="liveform" class="geocoder-form">
-                                <div id="liveGeocoder" class="geocoder-container"></div>
+                            <div class="row">
+                                <form id="liveform" class="geocoder-form">
+                                    <div id="liveGeocoder" class="geocoder-container"></div>
+                                </form>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <form id="liveCompanyNameForm">
+                                        <input type="text" id="liveCompanyName" placeholder="Company Name">
+                                    </form>
+                                </div> 
+                                <div class="col-5">
+                                    <form id="liveCompanyLinkForm">
+                                        <input type="text" id="liveCompanyLink" placeholder="Company URL">
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- <div class="row">
+                                <div class="col-12 d-flex justify-content-end">
+                                    <button type="button" class="btn-green" onclick="addLocation('live', event)">Add</button>
+                                </div>
+                            </div> -->
+                            <div class="row ">
                                 <button type="button" class="btn-green" onclick="addLocation('live', event)">Add</button>
-                            </form>
+                            </div>
                             <pre id="liveResult"></pre>
                         </div>
                     </div>
@@ -40,8 +61,27 @@
                             <h4>In Progress:</h4>
                             <form id="inProgressform" class="geocoder-form">
                                 <div id="inProgressGeocoder" class="geocoder-container"></div>
+                            </form>                            
+                            <div class="row">
+                                <div class="col-6">
+                                    <form id="inProgressCompanyNameForm">
+                                        <input type="text" id="inProgressCompanyName" placeholder="Company Name">
+                                    </form>
+                                </div> 
+                                <div class="col-5">
+                                    <form id="demoCompanyLinkForm">
+                                        <input type="text" id="inProgressCompanyLink" placeholder="Company URL">
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- <div class="row">
+                                <div class="col-12 d-flex justify-content-end">
+                                    <button type="button" class="btn-green" onclick="addLocation('inProgress' , event)">Add</button>
+                                </div>
+                            </div> -->
+                            <div class="row">
                                 <button type="button" class="btn-green" onclick="addLocation('inProgress' , event)">Add</button>
-                            </form>
+                            </div>
                             <pre id="inProgressResult"></pre>
                         </div>
                     </div>
@@ -53,8 +93,27 @@
                             <h4>Demo:</h4>
                             <form id="demoform" class="geocoder-form">
                                 <div id="demoGeocoder" class="geocoder-container"></div>
-                                <button type="button" class="btn-green" onclick="addLocation ('demo' , event)">Add</button>
                             </form>
+                            <div class="row">
+                                <div class="col-6">
+                                    <form id="demoCompanyNameForm">
+                                        <input type="text" id="demoCompanyName" placeholder="Company Name">
+                                    </form>
+                                </div> 
+                                <div class="col-5">
+                                    <form id="demoCompanyLinkForm">
+                                        <input type="text" id="demoCompanyLink" placeholder="Company URL">
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- <div class="row">
+                                <div class="col-12 d-flex justify-content-end">
+                                    <button type="button" class="btn-green" onclick="addLocation ('demo' , event)">Add</button>
+                                </div>
+                            </div> -->
+                            <div class="row">
+                                <button type="button" class="btn-green" onclick="addLocation('demo', event)">Add</button>
+                            </div>
                             <pre id="demoResult"></pre>
                         </div>
                     </div>
@@ -116,18 +175,52 @@
             // });
         }
 
-        function checkLocationExists(locationId) {
-            return Object.values(locations).some(category => category.some(location => location.id === locationId));
+        // function checkLocationExists(locationId) {
+        //     return Object.values(locations).some(category => category.some(location => location.id === locationId));
+        // }
+
+        // function checkLocationExists(type, locationId, companyName){
+        //     return locations[type].some(location => {
+        //     return location.id === locationId && location.companyName === companyName;
+        //     });
+        // }
+
+        function checkLocationExists(type, locationId, companyName){
+            for (const type in locations){
+                if (locations.hasOwnProperty(type)){
+                    if (locations[type].some(location => location.id === locationId && location.companyName === companyName)) {
+                        return true;
+                    }
+                }
+            }
         }
 
-        function addLocation(type, event) {
-            
+        async function addLocation(type, event) {
             const locationResult = document.getElementById(`${type}Result`);
-            const locationData = JSON.parse(locationResult.dataset.locationData);
-
-            if (!locations[type]) {
-                locations[type] = [];
+            const locationData = locationResult.dataset.locationData ? JSON.parse(locationResult.dataset.locationData) : {};
+            const companyName = document.getElementById(`${type}CompanyName`).value.trim();
+            const companyLink = document.getElementById(`${type}CompanyLink`).value.trim();
+            
+            if (!locationData.id) {
+                alert('Please select a location.');
+                return;
             }
+
+            if (companyName === '' || companyLink === '') {
+                alert('Please fill in both Company Name and Company URL.');
+                return;
+            }
+
+            // if (!isValidCompanyLink(companyLink)) {
+            //     alert('Please enter a valid URL');
+            //     return;
+            // }
+
+            const isURLValid = await isValidCompanyLink(companyLink);
+                if (!isURLValid) {
+                    alert('Please enter a valid URL');
+                    return;
+                }
 
             const dataToStore = {
                 type: type,
@@ -136,40 +229,66 @@
                 address: locationData.address,
                 longitude: locationData.longitude,
                 latitude: locationData.latitude,
+                companyName: companyName,
+                companyLink: companyLink
             };
 
             const locationItem = document.createElement('div');
             locationItem.className = 'location-item row';
 
-            if(!checkLocationExists(dataToStore.id)){
+            if (!checkLocationExists(type, dataToStore.id, companyName)) {
                 locations[type].push(dataToStore);
                 const itemIndex = locations[type].length;
 
                 locationItem.innerHTML = `
                     <div class="row">
-                        <div class="col-3">${itemIndex}.<strong>Name:</strong></div>
-                        <div class="col-9">${locationData.name}</div>
+                        <div class="col-4">${itemIndex}.<strong>Company:</strong></div>
+                        <div class="col-8">${companyName}</div>
                     </div>
                     <div class="row">
-                        <div class="col-3"><strong>Address:</strong></div>
-                        <div class="col-9">${locationData.address}</div>
+                        <div class="col-4"><strong>Name:</strong></div>
+                        <div class="col-8">${locationData.name}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4"><strong>Address:</strong></div>
+                        <div class="col-8">${locationData.address}</div>
                     </div>
                 `;
 
                 locationResult.appendChild(locationItem);
+                document.getElementById(`${type}CompanyName`).value = '';
+                document.getElementById(`${type}CompanyLink`).value = '';
             } else {
-                console.log("${dataToStore.name } already exists")
-                // locationItem.innerText = `${locationData.name} already added\n`;
-                locationItem.innerHTML = `<div class="col-12">${locationData.name} already added</div>`;
+                console.log(`${dataToStore.companyName} already exists in ${dataToStore.name}`);
+                locationItem.innerHTML = `<div class="col-12">${dataToStore.companyName} already added in ${locationData.name}</div>`;
                 locationResult.appendChild(locationItem);
             }
-
+            
             // const storedData = JSON.parse(localStorage.getItem('locations')) || { live: [], inProgress: [], demo: [] };
             // storedData[type].push(dataToStore);
             // localStorage.setItem('locations', JSON.stringify(storedData));
 
             console.log(`Adding ${JSON.stringify(locations)} to ${type} locations.`);
         }
+    
+
+        async function isValidCompanyLink(link) {
+            try {
+                const response = await fetch('http://localhost:3000/validate-url', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url: link })
+                });
+                const result = await response.json();
+                return result.valid;
+                } catch (error) {
+                console.error('Error validating URL:', error);
+                return false;
+            }
+        }
+        
 
         window.onload = function() {
             initializeGeocoder('liveGeocoder', 'liveResult');
@@ -210,12 +329,16 @@
                 locationItem.innerHTML = `
                     <div class="col-11">  
                         <div class="row">
-                            <div class="col-3">${index + 1}.<strong>Name:</strong></div>
-                            <div class="col-9">${locationData.name}</div>
+                            <div class="col-4">${index + 1}.<strong>Company:</strong></div>
+                            <div class="col-8">${locationData.companyName}</div>
                         </div>
+                    <div class="row">
+                        <div class="col-4"><strong>Name:</strong></div>
+                        <div class="col-8">${locationData.name}</div>
+                    </div>
                         <div class="row">
-                            <div class="col-3"><strong>Address:</strong></div>
-                            <div class="col-9">${locationData.address}</div>
+                            <div class="col-4"><strong>Address:</strong></div>
+                            <div class="col-8">${locationData.address}</div>
                         </div>
                     </div>
                     <div class="col-1">
@@ -275,6 +398,18 @@
                 console.error('Error adding location:', error);
             });
         }
+
+        // function checkInput(type) {
+        //     const companyName = document.getElementById(`${type}CompanyName`).value.trim();
+        //     const companyLink = document.getElementById(`${type}CompanyLink`).value.trim();
+        //     const addButton = document.querySelector(`#${type}form button.btn-green`);
+
+        //     if (companyName !== '' && companyLink !== '') {
+        //         addButton.removeAttribute('disabled');
+        //     } else {
+        //         addButton.setAttribute('disabled', true);
+        //     }
+        // }
 
     </script>
 

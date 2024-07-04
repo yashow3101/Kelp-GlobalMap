@@ -1,5 +1,16 @@
 {
-  "live": [],
+  "live": [
+    {
+      "type": "live",
+      "id": "place.29403243",
+      "name": "Mumbai",
+      "address": "Mumbai, Maharashtra, India",
+      "longitude": 72.878723,
+      "latitude": 19.077793,
+      "companyName": "Kelp",
+      "companyLink": "https://www.kelpglobal.com/"
+    }
+  ],
   "inProgress": [],
   "demo": []
 }

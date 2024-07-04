@@ -79,8 +79,16 @@
             .addTo(map);
 
             const popup = new mapboxgl.Popup().setHTML(`
+                <div class="custom-popup">
+                    <form id="CompanyNameForm">
+                        <input type="text" id="CompanyName" name="CompanyName" placeholder="Company Name">
+                    </form>
+                    <form id="CompanyLinkForm">
+                        <input type="text" id="CompanyLink" name="CompanyLink" placeholder="Company URL">
+                    </form>
+                </div>
                 <div class="btn-popup">
-                    <button type="button" onclick="addPinLocation()"><span style='font-size:15px;'>&#9989;</span></button>
+                    <button type="button" id="tickButton" onclick="addPinLocation()"><span style='font-size:15px;'>&#9989;</span></button>
                     <button type="button" onclick="deletePin()"><span style='font-size:15px;'>&#10060;</span></button>
                 </div>
             `);
@@ -93,9 +101,16 @@
                     popup.setHTML(`
                         <div class="custom-popup">
                             <h2>Location: ${locationData.city}</h2>
+                            <br>
+                            <form id="CompanyNameForm">
+                                <input type="text" id="CompanyName" name="CompanyName" placeholder="Company Name">
+                            </form>
+                            <form id="CompanyLinkForm">
+                                <input type="text" id="CompanyLink" name="CompanyLink" placeholder="Company URL">
+                            </form>
                         </div>
                         <div class="btn-popup">
-                            <button type="button" onclick="addPinLocation()"><span style='font-size:15px;'>&#9989;</span></button>
+                            <button type="button" id="tickButton" onclick="addPinLocation()"><span style='font-size:15px;'>&#9989;</span></button>
                             <button type="button" onclick="deletePin()"><span style='font-size:15px;'>&#10060;</span></button>
                         </div>
                     `);
@@ -110,9 +125,23 @@
             }
         }
 
-        function addPinLocation() {
+        async function addPinLocation() {
             if (currentMarker) {
                 const lngLat = currentMarker.getLngLat();
+                const companyName = document.getElementById(`CompanyName`).value;
+                const companyLink = document.getElementById(`CompanyLink`).value;
+
+                if (companyName === '' || companyLink === '') {
+                alert('Please fill in both Company Name and Company URL.');
+                return;
+                }
+
+                const isURLValid = await isValidCompanyLink(companyLink);
+                if (!isURLValid) {
+                    alert('Please enter a valid URL');
+                    return;
+                }
+
                 reverseGeocode(lngLat).then(locationData => {
                     const data = {
                         type: currentType,
@@ -121,6 +150,8 @@
                         address: locationData.address,
                         longitude: lngLat.lng,
                         latitude: lngLat.lat,
+                        companyName: companyName,
+                        companyLink: companyLink
                     };
                         
 
@@ -146,6 +177,24 @@
                 });
             }
         }
+
+        async function isValidCompanyLink(companyLink) {
+            try {
+                const response = await fetch('http://localhost:3000/validate-url', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url: companyLink })
+                });
+                const result = await response.json();
+                return result.valid;
+            } catch (error) {
+                console.error('Error validating URL:', error);
+                return false;
+            }
+        }
+
 
         function reverseGeocode(lngLat) {
             const accessToken = 'pk.eyJ1IjoieWFzaG93MzEwMSIsImEiOiJjbHhlbjNmNWEwZ2I3MnJxdDhhcjVsbDlqIn0.RHTOWqOzCCfQAyVg3a7IiA';
@@ -177,6 +226,7 @@
                         }
                     } else {
                         throw new Error('No address found');
+                        alert('Please move the pin to a location')
                     }
                 })
                 .catch(error => console.error('Error with reverse geocoding:', error));
@@ -228,10 +278,17 @@
                 const markerContainer = document.createElement('div');
                 markerContainer.appendChild(markerElement);
 
-                const popup = new mapboxgl.Popup({
-                    closeButton: false,
-                    closeOnClick: false
-                }).setHTML(`<div class="cust-popup"><h3>${location.name}</h3></div>`);
+                // const popup = new mapboxgl.Popup({
+                //     closeButton: false,
+                //     closeOnClick: false
+                // }).setHTML(`<div class="cust-popup"><h3>${location.name}</h3></div>`);
+
+                const popup = new mapboxgl.Popup({closeOnClick: true}).setHTML(`
+                <div class="cust-popup">
+                    <p>Company: <a href="${location.companyLink}" target="_blank">${location.companyName}</a></p>
+                    <p>City: <h7>${location.name}</h7></p>
+                </div>
+                `);
 
                 const marker = new mapboxgl.Marker({
                     element: markerContainer,
@@ -240,15 +297,20 @@
                 .setPopup(popup)
                 .addTo(map);
 
-                markerContainer.addEventListener('mouseenter', () => {
-                    popup.addTo(map);
-                    map.getCanvas().style.cursor = 'pointer';
+                marker.getElement().addEventListener('click', () => {
+                marker.togglePopup();
                 });
+
+
+                // markerContainer.addEventListener('mouseenter', () => {
+                //     popup.addTo(map);
+                //     map.getCanvas().style.cursor = 'pointer';
+                // });
                 
-                markerContainer.addEventListener('mouseleave', () => {
-                    popup.remove();
-                    map.getCanvas().style.cursor = '';
-                });
+                // markerContainer.addEventListener('mouseleave', () => {
+                //     popup.remove();
+                //     map.getCanvas().style.cursor = '';
+                // });
             });
         }
     })

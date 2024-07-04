@@ -3,24 +3,23 @@ body{
     height:100%
 }
 
+.mapboxgl-ctrl-geocoder {
+    width: 360px!important;
+}
+
+
 .container{
-    /* display: flex;
-    justify-content:space-between;
-    padding:10px;
-    width: 100%;
-    border-radius: 8px;
-    flex-wrap: wrap;*/
 
     display: flex;
     flex-direction:column;
     justify-content: space-between;
     min-height: 80vh;
-    max-width: 1400px;
+    max-width: 1265px;
 
 }
 
 .mapboxgl-ctrl-geocoder {
-    width: 90%; 
+    width: 100%; 
     max-width: 90%; 
     margin-top: 10px;
     position: relative;
@@ -37,14 +36,11 @@ body{
 .card-body h4 {
     color: white;
 }
-/* @media screen and (max-width: 1000) {
-    .mapboxgl-ctrl-geocoder--input{
-        width: 100%; 
-        max-width: 100%; 
-        margin-top: 10px;
-        position: relative;
-    }
-} */
+
+.geocoder-container{
+    display:inline;
+    width: 300px;
+}
 
 #liveResult,
 #inProgressResult,
@@ -57,7 +53,6 @@ body{
     border-radius: 4px;
     /* background-color: #45546c; */
     flex-grow:1;
-
 }
 
 #liveResult .location-item,
@@ -118,7 +113,9 @@ body{
     font-size: 17px;
     border-radius: 4px;
     margin-left: 10px;
-    margin-top:10px
+    margin-top:10px;
+    width: 362px;
+    /* width: 100px; */
 }
 
 .btn-greener{
@@ -285,11 +282,32 @@ body{
     width: auto;
     height: auto;
     position: relative;
-    cursor: none;
+    cursor: default;
+    font-size: 13px;
+    border: none;
+    outline: none;
 }
 
-.cust-popup h3 {
-    font-size: 13px;
+.cust-popup p {
+    margin: 0px ;
+}
+
+.cust-popup a {
+    color: black;
+    font-weight: 700;
+    outline:none;
+    border: none;
+}
+
+.cust-popup a:hover {
+    color:blue
+}
+
+.cust-popup h7 {
+    color: black;
+    font-weight: 700;
+    outline:none;
+    border: none;
 }
 
 .custom-popup {
@@ -320,7 +338,32 @@ body{
     font-weight: bold;
 }
 
+#liveCompanyName, #liveCompanyLink,
+#inProgressCompanyName, #inProgressCompanyLink,
+#demoCompanyName, #demoCompanyLink
+{
+    display:inline;
+    width: 169px;
+    padding: 7px;
+    box-sizing: border-box;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight:600;
+}
 
+#CompanyName{
+    box-sizing: border-box;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+#CompanyLink{
+    box-sizing: border-box;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
 /* .mapboxgl-popup{
     max-width: 200px;
     font:
